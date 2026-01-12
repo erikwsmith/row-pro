@@ -3,8 +3,9 @@ import cors from 'cors';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
-import User from './Models/UserModel.js';
 import AuthRoute from './Routes/AuthRoute.js';
+import AdminRoute from './Routes/AdminRoute.js';
+import Login from './Controllers/Login.js';
 
 dotenv.config();
 
@@ -30,19 +31,14 @@ app.use(
 );
 app.use(cookieParser());
 app.use(express.json());
-app.use("/", AuthRoute);
+app.use('/api', AuthRoute);
+app.use('/admin', AuthRoute, AdminRoute);
 
-app.get('/', (req, res)=>{
-    res.json({message: "Server is connected!"});
-})
+// Login
+app.post('/login', Login);
 
-// get Users from MongoDB
-app.get('/api/users', async (req, res) => {
-    const data = await User.find();
-    res.json({
-        message: "You've landed on the Users page!",
-        data: data
-    });
+app.use((req, res, next)=>{
+    return res.status(404).json({message: 'Page not found.'});    
 })
 
 
