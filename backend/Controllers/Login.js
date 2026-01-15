@@ -10,11 +10,11 @@ const Login = async (req, res, next) => {
         };
         const user = await User.findOne({email});
         if(!user){
-            return res.json({message: 'User not found.'});
+            return res.json({message: 'Email not found. Please try again.', emailNotFound: true});
         };
         const auth = await bcrypt.compare(password, user.password);
         if(!auth){
-            return res.json({message: 'Incorrect password. Please try again.'});
+            return res.json({message: 'Incorrect password. Please try again.', passwordNotFound: true});
         };
         const token = createSecretToken(user._id);
         res.cookie("token", token, {
